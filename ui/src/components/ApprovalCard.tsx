@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import { Link } from "@/lib/router";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export function ApprovalCard({
   detailLink?: string;
   isPending: boolean;
 }) {
+  const { i18n } = useTranslation();
   const Icon = typeIcon[approval.type] ?? defaultTypeIcon;
   const label = approvalLabel(approval.type, approval.payload as Record<string, unknown> | null);
   const showResolutionButtons =
@@ -55,7 +57,7 @@ export function ApprovalCard({
         <div className="flex items-center gap-1.5 shrink-0">
           {statusIcon(approval.status)}
           <span className="text-xs text-muted-foreground capitalize">{approval.status}</span>
-          <span className="text-xs text-muted-foreground">· {timeAgo(approval.createdAt)}</span>
+          <span className="text-xs text-muted-foreground">· {timeAgo(approval.createdAt, i18n.language)}</span>
         </div>
       </div>
 

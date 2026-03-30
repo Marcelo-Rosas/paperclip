@@ -1,14 +1,14 @@
 {
   "id": "/",
-  "name": "Paperclip",
-  "short_name": "Paperclip",
-  "description": "AI-powered project management and agent coordination platform",
+  "name": "Vectra Cargo — Control Room",
+  "short_name": "Vectra",
+  "description": "Orquestração de agentes e operação logística",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#18181b",
-  "background_color": "#18181b",
+  "theme_color": "#1B2A4A",
+  "background_color": "#1B2A4A",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

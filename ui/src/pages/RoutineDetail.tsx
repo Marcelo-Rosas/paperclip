@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "@/lib/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -233,6 +234,7 @@ function TriggerEditor({
 }
 
 export function RoutineDetail() {
+  const { i18n } = useTranslation();
   const { routineId } = useParams<{ routineId: string }>();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -662,7 +664,7 @@ export function RoutineDetail() {
               }`}
             />
           </button>
-          <span className={`min-w-[3.75rem] text-sm font-medium ${automationLabelClassName}`}>
+          <span className={`min-w-15 text-sm font-medium ${automationLabelClassName}`}>
             {automationLabel}
           </span>
         </div>
@@ -981,7 +983,7 @@ export function RoutineDetail() {
                       </Link>
                     )}
                   </div>
-                  <span className="text-xs text-muted-foreground shrink-0 ml-2">{timeAgo(run.triggeredAt)}</span>
+                  <span className="text-xs text-muted-foreground shrink-0 ml-2">{timeAgo(run.triggeredAt, i18n.language)}</span>
                 </div>
               ))}
             </div>
@@ -1009,7 +1011,7 @@ export function RoutineDetail() {
                       </span>
                     )}
                   </div>
-                  <span className="text-muted-foreground/60 shrink-0">{timeAgo(event.createdAt)}</span>
+                  <span className="text-muted-foreground/60 shrink-0">{timeAgo(event.createdAt, i18n.language)}</span>
                 </div>
               ))}
             </div>

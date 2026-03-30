@@ -65,6 +65,14 @@ Use semantic token names, never raw color values:
 | `--sidebar-*` | Sidebar-specific variants |
 | `--chart-1` through `--chart-5` | Data visualization |
 
+### Vectra Cargo palette (canonical)
+
+This fork aligns the dashboard with **Vectra Cargo** branding. Raw hex values and semantic mapping to CSS tokens live in `doc/vectra/COLOR_PALETTE.md`; optional `doc/vectra/colors.json` mirrors the same names for PDF/report tooling. The UI layer also exposes primitives in `ui/src/index.css` as `--vectra-navy`, `--vectra-orange`, `--vectra-orange-light`, etc. Prefer semantic tokens (`--primary`, `--sidebar`, …) in components; use `--vectra-*` only when you need an explicit brand match.
+
+### Internationalization
+
+User-visible strings must go through **i18n** (`react-i18next` in `ui/src/i18n/`). Do not add new hardcoded English in the UI; add keys to `ui/src/i18n/locales/en.json` and `pt-BR.json`. Use `t('…')` and keep locale-aware formatting for dates (`toLocaleString` / `toLocaleTimeString` with `i18n.language`).
+
 ### Radius
 
 Single `--radius` variable (0.625rem) with derived sizes:

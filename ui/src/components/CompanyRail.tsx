@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Paperclip, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Plus } from "lucide-react";
 import { useQueries } from "@tanstack/react-query";
 import {
   DndContext,
@@ -154,6 +155,7 @@ function SortableCompanyItem({
 }
 
 export function CompanyRail() {
+  const { t } = useTranslation();
   const { companies, selectedCompanyId, setSelectedCompanyId } = useCompany();
   const { openOnboarding } = useDialog();
   const navigate = useNavigate();
@@ -267,10 +269,18 @@ export function CompanyRail() {
   );
 
   return (
-    <div className="flex flex-col items-center w-[72px] shrink-0 h-full bg-background border-r border-border">
-      {/* Paperclip icon - aligned with top sections (implied line, no visible border) */}
-      <div className="flex items-center justify-center h-12 w-full shrink-0">
-        <Paperclip className="h-5 w-5 text-foreground" />
+    <div className="flex flex-col items-center w-[72px] shrink-0 h-full bg-sidebar border-r border-sidebar-border">
+      {/* Vectra mark — app icon (navy squircle + V azul/laranja) */}
+      <div className="flex items-center justify-center h-12 w-full shrink-0 px-2 py-2">
+        <img
+          src="/brands/vectra-mark.png"
+          alt={t("app.title")}
+          className="h-9 w-9 object-contain object-center select-none"
+          width={36}
+          height={36}
+          loading="eager"
+          decoding="async"
+        />
       </div>
 
       {/* Company list */}
@@ -313,13 +323,13 @@ export function CompanyRail() {
             <button
               onClick={() => openOnboarding()}
               className="flex items-center justify-center w-11 h-11 rounded-[22px] hover:rounded-[14px] border-2 border-dashed border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-[border-color,color,border-radius] duration-150"
-              aria-label="Add company"
+              aria-label={t("companyRail.addCompanyAria")}
             >
               <Plus className="h-5 w-5" />
             </button>
           </TooltipTrigger>
           <TooltipContent side="right" sideOffset={8}>
-            <p>Add company</p>
+            <p>{t("companyRail.addCompany")}</p>
           </TooltipContent>
         </Tooltip>
       </div>

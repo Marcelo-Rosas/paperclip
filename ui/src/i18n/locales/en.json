@@ -1,0 +1,144 @@
+{
+  "app": {
+    "title": "Vectra Cargo"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "ptBR": "Português (Brasil)"
+  },
+  "layout": {
+    "skipToContent": "Skip to Main Content",
+    "documentation": "Documentation",
+    "instanceSettings": "Instance settings",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "closeSidebar": "Close sidebar"
+  },
+  "sidebar": {
+    "selectCompany": "Select company",
+    "newIssue": "New Issue",
+    "dashboard": "Dashboard",
+    "inbox": "Inbox",
+    "work": "Work",
+    "issues": "Issues",
+    "routines": "Routines",
+    "goals": "Goals",
+    "company": "Company",
+    "org": "Org",
+    "skills": "Skills",
+    "costs": "Costs",
+    "activity": "Activity",
+    "settings": "Settings",
+    "beta": "Beta"
+  },
+  "instanceSidebar": {
+    "title": "Instance Settings",
+    "general": "General",
+    "heartbeats": "Heartbeats",
+    "experimental": "Experimental",
+    "plugins": "Plugins"
+  },
+  "companyRail": {
+    "addCompany": "Add company",
+    "addCompanyAria": "Add company"
+  },
+  "onboarding": {
+    "close": "Close",
+    "steps": {
+      "company": "Company",
+      "agent": "Agent",
+      "task": "Task",
+      "launch": "Launch"
+    },
+    "step1": {
+      "title": "Name your company",
+      "subtitle": "This is the organization your agents will work for.",
+      "companyName": "Company name",
+      "companyPlaceholder": "Acme Corp",
+      "mission": "Mission / goal (optional)",
+      "missionPlaceholder": "What is this company trying to achieve?"
+    },
+    "step2": {
+      "title": "Create your first agent",
+      "subtitle": "Choose how this agent will run tasks.",
+      "agentName": "Agent name",
+      "agentPlaceholder": "CEO",
+      "adapterType": "Adapter type",
+      "moreAdapters": "More Agent Adapter Types",
+      "recommended": "Recommended",
+      "claudeCode": "Claude Code",
+      "claudeDesc": "Local Claude agent",
+      "codex": "Codex",
+      "codexDesc": "Local Codex agent",
+      "adapterEnvTitle": "Adapter environment check",
+      "adapterEnvDesc": "Runs a live probe that asks the adapter CLI to respond with hello.",
+      "testNow": "Test now",
+      "testing": "Testing..."
+    },
+    "step3": {
+      "introTitle": "Give it something to do",
+      "introSubtitle": "Give your agent a small task to start with — a bug fix, a research question, writing a script.",
+      "taskTitle": "Task title",
+      "taskTitlePlaceholder": "e.g. Research competitor pricing",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Add more detail about what the agent should do..."
+    },
+    "step4": {
+      "title": "Ready to launch",
+      "subtitle": "Everything is set up. Launching now will create the starter task, wake the agent, and open the issue.",
+      "companyLabel": "Company",
+      "taskLabel": "Task"
+    },
+    "footer": {
+      "back": "Back",
+      "next": "Next",
+      "creating": "Creating...",
+      "createOpenIssue": "Create & Open Issue"
+    },
+    "adapterEnv": {
+      "passed": "Passed",
+      "warnings": "Warnings",
+      "failed": "Failed",
+      "hintPrefix": "Hint: "
+    }
+  },
+  "dashboard": {
+    "emptyWelcome": "Welcome to {{app}}. Set up your first company and agent to get started.",
+    "getStarted": "Get Started",
+    "emptySelectCompany": "Create or select a company to view the dashboard.",
+    "noAgents": "You have no agents.",
+    "createAgentHere": "Create one here",
+    "budgetIncidents_one": "{{count}} active budget incident",
+    "budgetIncidents_other": "{{count}} active budget incidents",
+    "budgetSubline": "{{pausedAgents}} agents paused · {{pausedProjects}} projects paused · {{pendingApprovals}} pending budget approvals",
+    "openBudgets": "Open budgets",
+    "agentsEnabled": "Agents enabled",
+    "tasksInProgress": "Tasks in progress",
+    "monthSpend": "Month spend",
+    "pendingApprovals": "Pending approvals",
+    "runningPausedErrors": "{{running}} running, {{paused}} paused, {{errors}} errors",
+    "openBlocked": "{{open}} open, {{blocked}} blocked",
+    "monthSpendPercentOf": "{{pct}}% of {{budget}} budget",
+    "monthSpendUnlimited": "Unlimited budget",
+    "pendingBudgetOverrides_one": "{{count}} budget override awaiting board review",
+    "pendingBudgetOverrides_other": "{{count}} budget overrides awaiting board review",
+    "pendingAwaitingBoard": "Awaiting board review",
+    "chartRunActivity": "Run activity",
+    "chartIssuesPriority": "Issues by priority",
+    "chartIssuesStatus": "Issues by status",
+    "chartSuccessRate": "Success rate",
+    "last14Days": "Last 14 days",
+    "recentActivity": "Recent activity",
+    "recentTasks": "Recent tasks",
+    "noTasksYet": "No tasks yet.",
+    "agentsSection": "Agents",
+    "noRecentRuns": "No recent agent runs.",
+    "liveNow": "Live now",
+    "finishedPrefix": "Finished",
+    "startedPrefix": "Started",
+    "waitingTranscriptParsing": "Waiting for transcript parsing…",
+    "waitingOutput": "Waiting for output…",
+    "noTranscript": "No transcript captured."
+  }
+}

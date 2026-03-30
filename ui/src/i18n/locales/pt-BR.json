@@ -1,0 +1,144 @@
+{
+  "app": {
+    "title": "Vectra Cargo"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "ptBR": "Português (Brasil)"
+  },
+  "layout": {
+    "skipToContent": "Ir para o conteúdo principal",
+    "documentation": "Documentação",
+    "instanceSettings": "Configurações da instância",
+    "switchToLight": "Alternar para modo claro",
+    "switchToDark": "Alternar para modo escuro",
+    "closeSidebar": "Fechar barra lateral"
+  },
+  "sidebar": {
+    "selectCompany": "Selecionar empresa",
+    "newIssue": "Nova issue",
+    "dashboard": "Painel",
+    "inbox": "Caixa de entrada",
+    "work": "Trabalho",
+    "issues": "Issues",
+    "routines": "Rotinas",
+    "goals": "Metas",
+    "company": "Empresa",
+    "org": "Organograma",
+    "skills": "Skills",
+    "costs": "Custos",
+    "activity": "Atividade",
+    "settings": "Configurações",
+    "beta": "Beta"
+  },
+  "instanceSidebar": {
+    "title": "Configurações da instância",
+    "general": "Geral",
+    "heartbeats": "Heartbeats",
+    "experimental": "Experimental",
+    "plugins": "Plugins"
+  },
+  "companyRail": {
+    "addCompany": "Adicionar empresa",
+    "addCompanyAria": "Adicionar empresa"
+  },
+  "onboarding": {
+    "close": "Fechar",
+    "steps": {
+      "company": "Empresa",
+      "agent": "Agente",
+      "task": "Tarefa",
+      "launch": "Lançar"
+    },
+    "step1": {
+      "title": "Nome da empresa",
+      "subtitle": "É a organização para a qual os agentes trabalharão.",
+      "companyName": "Nome da empresa",
+      "companyPlaceholder": "Ex.: Acme Corp",
+      "mission": "Missão / meta (opcional)",
+      "missionPlaceholder": "O que esta empresa busca alcançar?"
+    },
+    "step2": {
+      "title": "Crie seu primeiro agente",
+      "subtitle": "Escolha como este agente executará tarefas.",
+      "agentName": "Nome do agente",
+      "agentPlaceholder": "CEO",
+      "adapterType": "Tipo de adapter",
+      "moreAdapters": "Mais tipos de adapter",
+      "recommended": "Recomendado",
+      "claudeCode": "Claude Code",
+      "claudeDesc": "Agente Claude local",
+      "codex": "Codex",
+      "codexDesc": "Agente Codex local",
+      "adapterEnvTitle": "Verificação do ambiente do adapter",
+      "adapterEnvDesc": "Executa uma sonda ao vivo pedindo ao CLI do adapter que responda hello.",
+      "testNow": "Testar agora",
+      "testing": "Testando..."
+    },
+    "step3": {
+      "introTitle": "Dê algo para fazer",
+      "introSubtitle": "Dê ao agente uma tarefa pequena para começar — correção, pesquisa ou um script.",
+      "taskTitle": "Título da tarefa",
+      "taskTitlePlaceholder": "Ex.: Pesquisar preços da concorrência",
+      "description": "Descrição (opcional)",
+      "descriptionPlaceholder": "Detalhe o que o agente deve fazer..."
+    },
+    "step4": {
+      "title": "Pronto para lançar",
+      "subtitle": "Tudo configurado. Ao lançar, será criada a tarefa inicial, o agente será acordado e a issue será aberta.",
+      "companyLabel": "Empresa",
+      "taskLabel": "Tarefa"
+    },
+    "footer": {
+      "back": "Voltar",
+      "next": "Avançar",
+      "creating": "Criando...",
+      "createOpenIssue": "Criar e abrir issue"
+    },
+    "adapterEnv": {
+      "passed": "Aprovado",
+      "warnings": "Avisos",
+      "failed": "Falhou",
+      "hintPrefix": "Dica: "
+    }
+  },
+  "dashboard": {
+    "emptyWelcome": "Bem-vindo ao {{app}}. Configure a primeira empresa e o primeiro agente para começar.",
+    "getStarted": "Começar",
+    "emptySelectCompany": "Crie ou selecione uma empresa para ver o painel.",
+    "noAgents": "Você não tem agentes.",
+    "createAgentHere": "Criar aqui",
+    "budgetIncidents_one": "{{count}} incidente de orçamento ativo",
+    "budgetIncidents_other": "{{count}} incidentes de orçamento ativos",
+    "budgetSubline": "{{pausedAgents}} agentes pausados · {{pausedProjects}} projetos pausados · {{pendingApprovals}} aprovações de orçamento pendentes",
+    "openBudgets": "Abrir orçamentos",
+    "agentsEnabled": "Agentes ativos",
+    "tasksInProgress": "Tarefas em andamento",
+    "monthSpend": "Gasto do mês",
+    "pendingApprovals": "Aprovações pendentes",
+    "runningPausedErrors": "{{running}} em execução, {{paused}} pausados, {{errors}} com erro",
+    "openBlocked": "{{open}} abertas, {{blocked}} bloqueadas",
+    "monthSpendPercentOf": "{{pct}}% do orçamento de {{budget}}",
+    "monthSpendUnlimited": "Orçamento ilimitado",
+    "pendingBudgetOverrides_one": "{{count}} exceção de orçamento aguardando o board",
+    "pendingBudgetOverrides_other": "{{count}} exceções de orçamento aguardando o board",
+    "pendingAwaitingBoard": "Aguardando revisão do board",
+    "chartRunActivity": "Atividade de execuções",
+    "chartIssuesPriority": "Issues por prioridade",
+    "chartIssuesStatus": "Issues por status",
+    "chartSuccessRate": "Taxa de sucesso",
+    "last14Days": "Últimos 14 dias",
+    "recentActivity": "Atividade recente",
+    "recentTasks": "Tarefas recentes",
+    "noTasksYet": "Nenhuma tarefa ainda.",
+    "agentsSection": "Agentes",
+    "noRecentRuns": "Nenhuma execução recente de agente.",
+    "liveNow": "Ao vivo",
+    "finishedPrefix": "Finalizada",
+    "startedPrefix": "Iniciada",
+    "waitingTranscriptParsing": "Aguardando análise do transcript…",
+    "waitingOutput": "Aguardando saída…",
+    "noTranscript": "Nenhum transcript capturado."
+  }
+}

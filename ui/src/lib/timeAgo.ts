@@ -4,28 +4,59 @@ const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
 const MONTH = 30 * DAY;
 
-export function timeAgo(date: Date | string): string {
+function localeTag(locale?: string): string {
+  return locale === "pt-BR" ? "pt-BR" : "en";
+}
+
+/**
+ * Short relative time (seconds → months) for lists, e.g. issue updated.
+ */
+export function timeAgo(date: Date | string, locale?: string): string {
   const now = Date.now();
   const then = new Date(date).getTime();
-  const seconds = Math.round((now - then) / 1000);
+  const diffSec = Math.round((now - then) / 1000);
+  const loc = localeTag(locale);
+  const rtf = new Intl.RelativeTimeFormat(loc, { numeric: "auto" });
+  if (diffSec < 0) {
+    return rtf.format(Math.ceil(diffSec / 60), "minute");
+  }
+  if (diffSec < 60) return rtf.format(-diffSec, "second");
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffSec < HOUR) return rtf.format(-diffMin, "minute");
+  const diffH = Math.floor(diffSec / HOUR);
+  if (diffSec < DAY) return rtf.format(-diffH, "hour");
+  const diffD = Math.floor(diffSec / DAY);
+  if (diffSec < WEEK) return rtf.format(-diffD, "day");
+  const diffW = Math.floor(diffSec / WEEK);
+  if (diffSec < MONTH) return rtf.format(-diffW, "week");
+  const diffMo = Math.floor(diffSec / MONTH);
+  return rtf.format(-diffMo, "month");
+}
 
-  if (seconds < MINUTE) return "just now";
-  if (seconds < HOUR) {
-    const m = Math.floor(seconds / MINUTE);
-    return `${m}m ago`;
+/**
+ * Relative time for run cards: under ~30 days use Intl; older dates use short locale date.
+ */
+export function relativeTime(date: Date | string, locale?: string): string {
+  const now = Date.now();
+  const then = new Date(date).getTime();
+  const diffSec = Math.round((now - then) / 1000);
+  const loc = localeTag(locale);
+  const rtf = new Intl.RelativeTimeFormat(loc, { numeric: "auto" });
+  if (diffSec < 0) {
+    return rtf.format(Math.ceil(diffSec / 60), "minute");
   }
-  if (seconds < DAY) {
-    const h = Math.floor(seconds / HOUR);
-    return `${h}h ago`;
+  if (diffSec < 30 * DAY) {
+    if (diffSec < 60) return rtf.format(-diffSec, "second");
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffSec < HOUR) return rtf.format(-diffMin, "minute");
+    const diffH = Math.floor(diffSec / HOUR);
+    if (diffSec < DAY) return rtf.format(-diffH, "hour");
+    const diffD = Math.floor(diffSec / DAY);
+    return rtf.format(-diffD, "day");
   }
-  if (seconds < WEEK) {
-    const d = Math.floor(seconds / DAY);
-    return `${d}d ago`;
-  }
-  if (seconds < MONTH) {
-    const w = Math.floor(seconds / WEEK);
-    return `${w}w ago`;
-  }
-  const mo = Math.floor(seconds / MONTH);
-  return `${mo}mo ago`;
+  return new Date(date).toLocaleDateString(loc, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }

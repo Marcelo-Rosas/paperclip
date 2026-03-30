@@ -384,6 +384,12 @@ Flow:
 | Database | PostgreSQL (see [doc/DATABASE.md](./doc/DATABASE.md) for details — PGlite embedded for dev, Docker or hosted Supabase for production) |
 | Auth     | [Better Auth](https://www.better-auth.com/)                  |
 
+### UI Design Guide (Component Showcase)
+
+Paperclip includes an in-app design system showcase at the route `/design-guide`.
+
+- Source: `ui/src/pages/DesignGuide.tsx`
+
 ### Concurrency Model: Atomic Task Checkout
 
 Tasks use **single assignment** (one agent per task) with **atomic checkout**:

@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { pickTextColorForPillBg } from "@/lib/color-contrast";
 import { useDialog } from "../context/DialogContext";
@@ -229,6 +230,7 @@ export function IssuesList({
   onSearchChange,
   onUpdateIssue,
 }: IssuesListProps) {
+  const { i18n } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const { openNewIssue } = useDialog();
   const { data: session } = useQuery({
@@ -746,7 +748,7 @@ export function IssuesList({
                       )}
                     </>
                   )}
-                  mobileMeta={timeAgo(issue.updatedAt)}
+                  mobileMeta={timeAgo(issue.updatedAt, i18n.language)}
                   desktopTrailing={(
                     <>
                       {(issue.labels ?? []).length > 0 && (

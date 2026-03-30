@@ -1,0 +1,28 @@
+#:schema node_modules/wrangler/config-schema.json
+
+name = "paperclip-edge"
+main = "src/index.ts"
+compatibility_date = "2025-03-15"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Dev ────────────────────────────────────────────
+[vars]
+ENVIRONMENT = "development"
+# ORIGIN_URL is set per-environment below; in dev it defaults to localhost
+ORIGIN_URL = "http://localhost:3100"
+
+# ─── Staging ────────────────────────────────────────
+[env.staging]
+name = "paperclip-edge-staging"
+[env.staging.vars]
+ENVIRONMENT = "staging"
+# Set your staging origin server URL here
+ORIGIN_URL = "https://paperclip-staging.example.com"
+
+# ─── Production ─────────────────────────────────────
+[env.production]
+name = "paperclip-edge-production"
+[env.production.vars]
+ENVIRONMENT = "production"
+# Set your production origin server URL here
+ORIGIN_URL = "https://paperclip.example.com"
