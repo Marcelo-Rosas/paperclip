@@ -196,5 +196,27 @@
     "agentErrors_one": "{{count}} agente com erro",
     "agentErrors_other": "{{count}} agentes com erro",
     "budgetUtilization": "Orçamento em {{pct}}% de utilização neste mês"
+  },
+  "settings": {
+    "userPreferences": {
+      "title": "Preferências",
+      "appearance": {
+        "title": "Aparência",
+        "description": "Personalize a aparência",
+        "theme": "Tema",
+        "light": "Claro",
+        "dark": "Escuro"
+      },
+      "language": {
+        "title": "Idioma",
+        "description": "Escolha seu idioma preferido"
+      },
+      "about": {
+        "title": "Sobre",
+        "description": "Informações do aplicativo",
+        "version": "Versão",
+        "builtWith": "Construído com Paperclip"
+      }
+    }
   }
 }

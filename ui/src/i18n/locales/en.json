@@ -196,5 +196,27 @@
     "agentErrors_one": "{{count}} agent has errors",
     "agentErrors_other": "{{count}} agents have errors",
     "budgetUtilization": "Budget at {{pct}}% utilization this month"
+  },
+  "settings": {
+    "userPreferences": {
+      "title": "Preferences",
+      "appearance": {
+        "title": "Appearance",
+        "description": "Customize the look and feel",
+        "theme": "Theme",
+        "light": "Light",
+        "dark": "Dark"
+      },
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language"
+      },
+      "about": {
+        "title": "About",
+        "description": "Application information",
+        "version": "Version",
+        "builtWith": "Built with Paperclip"
+      }
+    }
   }
 }
