@@ -37,7 +37,8 @@
     "general": "General",
     "heartbeats": "Heartbeats",
     "experimental": "Experimental",
-    "plugins": "Plugins"
+    "plugins": "Plugins",
+    "preferences": "Preferences"
   },
   "companyRail": {
     "addCompany": "Add company",
