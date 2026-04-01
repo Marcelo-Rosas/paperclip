@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/paperclip-server
+  IMAGE_NAME: marcelo-rosas/paperclip-server
 
 jobs:
   build-and-push:
