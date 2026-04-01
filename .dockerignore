@@ -8,3 +8,5 @@ coverage
 data
 tmp
 *.log
+packages/adapters/ollama-local
+ui/src/adapters/ollama-local
