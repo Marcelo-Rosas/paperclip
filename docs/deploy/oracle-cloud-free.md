@@ -5,7 +5,41 @@ summary: Deploy Paperclip + Ollama on Oracle Cloud Always Free
 
 # Oracle Cloud Free Tier Deployment
 
-Deploy Paperclip with Ollama on Oracle Cloud's Always Free Arm instance.
+Deploy Paperclip (origin server) + Ollama on Oracle Cloud's Always Free Arm instance,
+behind Cloudflare Workers & Pages.
+
+## Architecture
+
+```
+  Users (browser)
+       │
+       ▼
+┌──────────────────────────────────────────────────┐
+│  Cloudflare Edge (your subdomain)                │
+│                                                  │
+│  Pages (SPA)              Worker (Edge Proxy)    │
+│  React + Vite             paperclip-edge         │
+│  ui/dist/*                ├─ CORS / security     │
+│     │                     ├─ rate limit           │
+│     └── /api/* ──────────▸└─ proxy to origin     │
+│                                    │             │
+└────────────────────────────────────┼─────────────┘
+                                     │ HTTPS
+                          ┌──────────▼───────────┐
+                          │  Oracle Cloud Free    │
+                          │  VM.Standard.A1.Flex  │
+                          │  4 OCPUs / 24 GB Arm  │
+                          │                       │
+                          │  Docker               │
+                          │  ├─ Paperclip :3100   │
+                          │  └─ PostgreSQL (emb.) │
+                          │  Ollama :11434        │
+                          └───────────────────────┘
+```
+
+The Oracle instance is the **origin server**. Cloudflare Pages serves the frontend (SPA)
+and the Worker proxies `/api/*` requests to the Oracle instance via `ORIGIN_URL` in
+`worker/wrangler.toml`.
 
 ## Instance Specifications
 
@@ -41,41 +75,83 @@ In the Oracle Cloud Console:
 3. Shape: **VM.Standard.A1.Flex** → 4 OCPUs, 24 GB RAM
 4. Boot volume: **200 GB**
 5. Add your SSH key
-6. **Security List**: open port **3100** (TCP) for Paperclip access
+6. **Security List**: open ports **3100** (TCP) and **443** (TCP)
 
-### 2. Run the Provisioning Script
+### 2. Connect from WSL (Windows)
 
 ```bash
-ssh ubuntu@<instance-ip>
+# Save your Oracle SSH key (once)
+mkdir -p ~/.ssh
+cp /mnt/c/Users/<your-windows-user>/.ssh/oracle_key ~/.ssh/oracle_key
+chmod 600 ~/.ssh/oracle_key
 
-# Clone the repo
+# Connect
+ssh -i ~/.ssh/oracle_key ubuntu@<instance-public-ip>
+```
+
+Optional — add to `~/.ssh/config` for quick access:
+
+```
+Host oracle
+    HostName <instance-public-ip>
+    User ubuntu
+    IdentityFile ~/.ssh/oracle_key
+```
+
+Then just: `ssh oracle`
+
+### 3. Run the Provisioning Script
+
+```bash
+# On the Oracle instance (via SSH)
 git clone https://github.com/marcelo-rosas/paperclip.git /opt/paperclip/repo
 cd /opt/paperclip/repo
 
-# Run provisioning
 sudo bash scripts/provision-oracle-free.sh
 ```
 
-### 3. Configure Secrets
+### 4. Configure Secrets
 
 ```bash
 cd /opt/paperclip
 nano .env
 ```
 
-Set at minimum:
-
 ```env
 BETTER_AUTH_SECRET=<generate with: openssl rand -base64 32>
-PAPERCLIP_PUBLIC_URL=http://<your-instance-public-ip>:3100
+PAPERCLIP_PUBLIC_URL=https://<your-subdomain>
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
 ```
 
-### 4. Start Paperclip
+Note: `PAPERCLIP_PUBLIC_URL` should be your **Cloudflare subdomain** (e.g. `https://app.yourdomain.com`),
+not the Oracle IP directly.
+
+### 5. Start Paperclip
 
 ```bash
 cd /opt/paperclip
 docker compose up -d --build
 ```
+
+### 6. Point Cloudflare Worker to Oracle Origin
+
+Update `worker/wrangler.toml` on your local machine (or in the repo):
+
+```toml
+[env.production.vars]
+ENVIRONMENT = "production"
+ORIGIN_URL = "http://<oracle-public-ip>:3100"
+```
+
+Then deploy the worker:
+
+```bash
+# From WSL or your local machine
+./scripts/deploy-cloudflare.sh worker production
+```
+
+Now your subdomain routes through Cloudflare → Oracle origin.
 
 ## Ollama Configuration
 
@@ -200,3 +276,28 @@ ollama rm <model-name>
 1. Check the container is running: `docker compose ps`
 2. Check iptables: `sudo iptables -L INPUT -n | grep 3100`
 3. Check Oracle Security List (Console) has port 3100 open
+4. Check Cloudflare Worker `ORIGIN_URL` points to the Oracle IP
+
+### HTTPS / SSL
+
+For production, set up HTTPS on the Oracle instance so the Worker connects securely:
+
+```bash
+# Option A: Cloudflare Tunnel (recommended — no open ports needed)
+# Install cloudflared on the Oracle instance
+curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
+sudo apt-get update && sudo apt-get install -y cloudflared
+cloudflared tunnel login
+cloudflared tunnel create paperclip
+cloudflared tunnel route dns paperclip api.<your-domain>
+cloudflared tunnel run paperclip
+```
+
+With a Cloudflare Tunnel, you don't need to open port 3100 in the Oracle Security List at all — traffic goes through Cloudflare's network.
+
+```bash
+# Option B: Let's Encrypt + Caddy (if exposing port 443 directly)
+sudo apt-get install -y caddy
+# Caddy auto-provisions HTTPS certificates
+```
