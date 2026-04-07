@@ -28,7 +28,7 @@ const adapterLabels: Record<string, string> = {
 const ENABLED_INVITE_ADAPTERS = new Set(["claude_local", "codex_local", "gemini_local", "opencode_local", "pi_local", "cursor", "hermes_local"]);
 
 function dateTime(value: string) {
-  return new Date(value).toLocaleString();
+  return new Date(value).toLocaleString(undefined, { timeZone: "America/Sao_Paulo" });
 }
 
 function readNestedString(value: unknown, path: string[]): string | null {

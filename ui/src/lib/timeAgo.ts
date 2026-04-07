@@ -1,3 +1,5 @@
+import i18n from "../i18n/i18n";
+
 const MINUTE = 60;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
@@ -5,7 +7,8 @@ const WEEK = 7 * DAY;
 const MONTH = 30 * DAY;
 
 function localeTag(locale?: string): string {
-  return locale === "pt-BR" ? "pt-BR" : "en";
+  const lang = locale || i18n.language || "pt-BR";
+  return lang === "pt-BR" ? "pt-BR" : "en";
 }
 
 /**
@@ -58,5 +61,6 @@ export function relativeTime(date: Date | string, locale?: string): string {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "America/Sao_Paulo",
   });
 }

@@ -71,10 +71,10 @@ export function ExecutionWorkspaceDetail() {
             <span className="break-all font-mono text-xs">{workspace.repoUrl}</span>
           ) : "None"}
         </DetailRow>
-        <DetailRow label="Opened">{new Date(workspace.openedAt).toLocaleString()}</DetailRow>
-        <DetailRow label="Last used">{new Date(workspace.lastUsedAt).toLocaleString()}</DetailRow>
+        <DetailRow label="Opened">{new Date(workspace.openedAt).toLocaleString(undefined, { timeZone: "America/Sao_Paulo" })}</DetailRow>
+        <DetailRow label="Last used">{new Date(workspace.lastUsedAt).toLocaleString(undefined, { timeZone: "America/Sao_Paulo" })}</DetailRow>
         <DetailRow label="Cleanup">
-          {workspace.cleanupEligibleAt ? `${new Date(workspace.cleanupEligibleAt).toLocaleString()}${workspace.cleanupReason ? ` · ${workspace.cleanupReason}` : ""}` : "Not scheduled"}
+          {workspace.cleanupEligibleAt ? `${new Date(workspace.cleanupEligibleAt).toLocaleString(undefined, { timeZone: "America/Sao_Paulo" })}${workspace.cleanupReason ? ` · ${workspace.cleanupReason}` : ""}` : "Not scheduled"}
         </DetailRow>
       </div>
     </div>

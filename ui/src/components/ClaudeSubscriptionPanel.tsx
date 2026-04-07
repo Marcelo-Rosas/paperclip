@@ -29,6 +29,7 @@ function detailText(window: QuotaWindow): string | null {
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
+      timeZone: "America/Sao_Paulo",
       timeZoneName: "short",
     });
     return `Resets ${formatted}`;
