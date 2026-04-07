@@ -3862,6 +3862,8 @@ packages:
     resolution: {integrity: sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
 
+  css.lint.unknownAtRules: {}
+
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
@@ -9714,6 +9716,8 @@ snapshots:
       mdn-data: 2.27.1
       source-map-js: 1.2.1
 
+  css.lint.unknownAtRules: {}
+
   cssesc@3.0.0: {}
 
   cssstyle@6.2.0:
@@ -12357,4 +12361,3 @@ snapshots:
   zod@4.3.6: {}
 
   zwitch@2.0.4: {}
-  css.lint.unknownAtRules: "ignore"
