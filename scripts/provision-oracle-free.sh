@@ -197,6 +197,7 @@ services:
       PAPERCLIP_DEPLOYMENT_EXPOSURE: "private"
       PAPERCLIP_PUBLIC_URL: "\${PAPERCLIP_PUBLIC_URL:-http://localhost:${PAPERCLIP_PORT}}"
       BETTER_AUTH_SECRET: "\${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET in .env}"
+      PAPERCLIP_AGENT_JWT_SECRET: "\${PAPERCLIP_AGENT_JWT_SECRET:?Set PAPERCLIP_AGENT_JWT_SECRET in .env}"
       ANTHROPIC_API_KEY: "\${ANTHROPIC_API_KEY:-}"
       OPENAI_API_KEY: "\${OPENAI_API_KEY:-}"
     volumes:
@@ -217,9 +218,14 @@ COMPOSE
 
   # Create .env template
   if [[ ! -f "$PAPERCLIP_DIR/.env" ]]; then
+    GENERATED_AUTH_SECRET=$(openssl rand -base64 32)
+    GENERATED_JWT_SECRET=$(openssl rand -base64 32)
     cat > "$PAPERCLIP_DIR/.env" <<ENV
-# Required — generate with: openssl rand -base64 32
-BETTER_AUTH_SECRET=
+# Required — auto-generated, rotate if compromised
+BETTER_AUTH_SECRET=${GENERATED_AUTH_SECRET}
+
+# Required — agent JWT signing key (auto-generated)
+PAPERCLIP_AGENT_JWT_SECRET=${GENERATED_JWT_SECRET}
 
 # Optional — LLM provider keys
 ANTHROPIC_API_KEY=

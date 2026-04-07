@@ -119,10 +119,14 @@ nano .env
 
 ```env
 BETTER_AUTH_SECRET=<generate with: openssl rand -base64 32>
+PAPERCLIP_AGENT_JWT_SECRET=<generate with: openssl rand -base64 32>
 PAPERCLIP_PUBLIC_URL=https://<your-subdomain>
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 ```
+
+Note: `PAPERCLIP_AGENT_JWT_SECRET` is **required** for agent runs. Without it, agents cannot
+authenticate with the Paperclip API and all agent tasks will fail with "Agent authentication required".
 
 Note: `PAPERCLIP_PUBLIC_URL` should be your **Cloudflare subdomain** (e.g. `https://app.yourdomain.com`),
 not the Oracle IP directly.
