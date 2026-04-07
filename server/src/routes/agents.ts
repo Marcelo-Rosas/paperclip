@@ -47,6 +47,7 @@ import { assertBoard, assertCompanyAccess, assertInstanceAdmin, getActorInfo } f
 import { findServerAdapter, listAdapterModels, detectAdapterModel } from "../adapters/index.js";
 import { redactEventPayload } from "../redaction.js";
 import { redactCurrentUserValue } from "../log-redaction.js";
+import { logger } from "../middleware/logger.js";
 import { renderOrgChartSvg, renderOrgChartPng, type OrgNode, type OrgChartStyle, ORG_CHART_STYLES } from "./org-chart-svg.js";
 import { instanceSettingsService } from "../services/instance-settings.js";
 import { runClaudeLogin } from "@paperclipai/adapter-claude-local/server";
@@ -413,6 +414,12 @@ export function agentRoutes(db: Db) {
     if (adapterType !== "opencode_local") return;
     const { config: runtimeConfig } = await secretsSvc.resolveAdapterConfigForRuntime(companyId, adapterConfig);
     const runtimeEnv = asRecord(runtimeConfig.env) ?? {};
+    const requestedModel = typeof runtimeConfig.model === "string" ? runtimeConfig.model : "<not set>";
+    const requestedCommand = typeof runtimeConfig.command === "string" ? runtimeConfig.command : "opencode";
+    logger.info(
+      { adapterType, model: requestedModel, command: requestedCommand },
+      "opencode_local: validating adapter config",
+    );
     try {
       await ensureOpenCodeModelConfiguredAndAvailable({
         model: runtimeConfig.model,
@@ -422,6 +429,10 @@ export function agentRoutes(db: Db) {
       });
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
+      logger.warn(
+        { adapterType, model: requestedModel, command: requestedCommand, error: reason },
+        "opencode_local: adapter config validation failed",
+      );
       throw unprocessable(`Invalid opencode_local adapterConfig: ${reason}`);
     }
   }

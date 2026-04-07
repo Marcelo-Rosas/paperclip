@@ -8,7 +8,8 @@ import {
 } from "@paperclipai/adapter-utils/server-utils";
 
 const MODELS_CACHE_TTL_MS = 60_000;
-const MODELS_DISCOVERY_TIMEOUT_MS = 20_000;
+const MODELS_DISCOVERY_TIMEOUT_MS =
+  Number(process.env.PAPERCLIP_OPENCODE_MODELS_TIMEOUT_MS) || 20_000;
 
 function resolveOpenCodeCommand(input: unknown): string {
   const envOverride =
@@ -123,6 +124,7 @@ export async function discoverOpenCodeModels(input: {
   // Prevent OpenCode from writing an opencode.json into the working directory.
   const runtimeEnv = normalizeEnv(ensurePathInEnv({ ...process.env, ...env, ...(resolvedHome ? { HOME: resolvedHome } : {}), OPENCODE_DISABLE_PROJECT_CONFIG: "true" }));
 
+  const timeoutSec = MODELS_DISCOVERY_TIMEOUT_MS / 1000;
   const result = await runChildProcess(
     `opencode-models-${Date.now()}-${Math.random().toString(16).slice(2)}`,
     command,
@@ -130,14 +132,19 @@ export async function discoverOpenCodeModels(input: {
     {
       cwd,
       env: runtimeEnv,
-      timeoutSec: MODELS_DISCOVERY_TIMEOUT_MS / 1000,
+      timeoutSec,
       graceSec: 3,
       onLog: async () => {},
     },
   );
 
   if (result.timedOut) {
-    throw new Error(`\`opencode models\` timed out after ${MODELS_DISCOVERY_TIMEOUT_MS / 1000}s.`);
+    const stderrHint = firstNonEmptyLine(result.stderr);
+    throw new Error(
+      `\`opencode models\` timed out after ${timeoutSec}s.` +
+      (stderrHint ? ` Last stderr: ${stderrHint}` : "") +
+      ` (set PAPERCLIP_OPENCODE_MODELS_TIMEOUT_MS to increase)`,
+    );
   }
   if ((result.exitCode ?? 1) !== 0) {
     const detail = firstNonEmptyLine(result.stderr) || firstNonEmptyLine(result.stdout);
