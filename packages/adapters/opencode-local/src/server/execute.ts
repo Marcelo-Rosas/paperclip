@@ -10,6 +10,7 @@ import {
   parseObject,
   buildPaperclipEnv,
   joinPromptSections,
+  buildIssueContextSection,
   redactEnvForLogs,
   ensureAbsoluteDirectory,
   ensureCommandResolvable,
@@ -270,10 +271,12 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
         ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
         : "";
     const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
+    const issueContextSection = buildIssueContextSection(context);
     const prompt = joinPromptSections([
       instructionsPrefix,
       renderedBootstrapPrompt,
       sessionHandoffNote,
+      issueContextSection,
       renderedPrompt,
     ]);
     const promptMetrics = {
@@ -281,6 +284,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       instructionsChars: instructionsPrefix.length,
       bootstrapPromptChars: renderedBootstrapPrompt.length,
       sessionHandoffChars: sessionHandoffNote.length,
+      issueContextChars: issueContextSection.length,
       heartbeatPromptChars: renderedPrompt.length,
     };
 

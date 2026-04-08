@@ -193,6 +193,44 @@ export function joinPromptSections(
     .join(separator);
 }
 
+/**
+ * Build a prompt section that describes the currently assigned issue so
+ * the agent knows *what* to work on — not just that it was woken up.
+ *
+ * Returns an empty string when there is no actionable issue context,
+ * which makes it safe to always include in `joinPromptSections`.
+ */
+export function buildIssueContextSection(context: Record<string, unknown>): string {
+  const title = asString(context.issueTitle, "").trim();
+  if (!title) return "";
+
+  const identifier = asString(context.issueIdentifier, "").trim();
+  const description = asString(context.issueDescription, "").trim();
+  const wakeReason = asString(context.wakeReason, "").trim();
+
+  const lines: string[] = [];
+  lines.push("## Current Issue");
+  if (identifier) {
+    lines.push(`**${identifier}**: ${title}`);
+  } else {
+    lines.push(`**Issue**: ${title}`);
+  }
+  if (description) {
+    lines.push("");
+    lines.push(description);
+  }
+  if (wakeReason) {
+    lines.push("");
+    lines.push(`Wake reason: ${wakeReason}`);
+  }
+  lines.push("");
+  lines.push(
+    "Execute the task described above. Do not just acknowledge — take concrete action, " +
+    "make progress, and report results.",
+  );
+  return lines.join("\n");
+}
+
 export function redactEnvForLogs(env: Record<string, string>): Record<string, string> {
   const redacted: Record<string, string> = {};
   for (const [key, value] of Object.entries(env)) {

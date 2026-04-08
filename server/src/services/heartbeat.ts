@@ -29,7 +29,7 @@ import { companySkillService } from "./company-skills.js";
 import { budgetService, type BudgetEnforcementScope } from "./budgets.js";
 import { secretService } from "./secrets.js";
 import { resolveDefaultAgentWorkspaceDir, resolveManagedProjectWorkspaceDir } from "../home-paths.js";
-import { summarizeHeartbeatRunResultJson } from "./heartbeat-run-summary.js";
+import { summarizeHeartbeatRunResultJson, isAcknowledgementOnlyOutput } from "./heartbeat-run-summary.js";
 import {
   buildWorkspaceReadyComment,
   cleanupExecutionWorkspaceArtifacts,
@@ -1976,6 +1976,7 @@ export function heartbeatService(db: Db) {
             id: issues.id,
             identifier: issues.identifier,
             title: issues.title,
+            description: issues.description,
             projectId: issues.projectId,
             projectWorkspaceId: issues.projectWorkspaceId,
             executionWorkspaceId: issues.executionWorkspaceId,
@@ -2277,6 +2278,25 @@ export function heartbeatService(db: Db) {
       })(),
     };
     context.paperclipWorkspaces = resolvedWorkspace.workspaceHints;
+    // Inject issue metadata so adapters can build actionable prompts
+    if (issueContext) {
+      context.issueTitle = issueContext.title;
+      context.issueIdentifier = issueContext.identifier ?? null;
+      if (issueContext.description) {
+        context.issueDescription = issueContext.description;
+      }
+      logger.debug(
+        {
+          runId: run.id,
+          agentId: agent.id,
+          issueId,
+          issueTitle: issueContext.title,
+          issueIdentifier: issueContext.identifier,
+          hasDescription: Boolean(issueContext.description),
+        },
+        "[paperclip:heartbeat] injected issue context for adapter prompt",
+      );
+    }
     const runtimeServiceIntents = (() => {
       const runtimeConfig = parseObject(resolvedConfig.workspaceRuntime);
       return Array.isArray(runtimeConfig.services)
@@ -2590,13 +2610,31 @@ export function heartbeatService(db: Db) {
       const normalizedUsage = sessionUsageResolution.normalizedUsage;
 
       let outcome: "succeeded" | "failed" | "cancelled" | "timed_out";
+      let outcomeWarning: string | null = null;
       const latestRun = await getRun(run.id);
       if (latestRun?.status === "cancelled") {
         outcome = "cancelled";
       } else if (adapterResult.timedOut) {
         outcome = "timed_out";
       } else if ((adapterResult.exitCode ?? 0) === 0 && !adapterResult.errorMessage) {
-        outcome = "succeeded";
+        // Detect acknowledgement-only runs: agent exited cleanly but only
+        // confirmed readiness instead of performing actual work.
+        const summaryText = adapterResult.summary ?? stdoutExcerpt;
+        if (issueId && isAcknowledgementOnlyOutput(summaryText)) {
+          outcome = "failed";
+          outcomeWarning = "Agent acknowledged instructions but did not perform operational work on the assigned issue.";
+          logger.warn(
+            {
+              runId: run.id,
+              agentId: agent.id,
+              issueId,
+              summaryExcerpt: (summaryText ?? "").slice(0, 200),
+            },
+            "[paperclip:heartbeat] run classified as failed: acknowledgement-only output with assigned issue",
+          );
+        } else {
+          outcome = "succeeded";
+        }
       } else {
         outcome = "failed";
       }
@@ -2647,7 +2685,7 @@ export function heartbeatService(db: Db) {
           outcome === "succeeded"
             ? null
             : redactCurrentUserText(
-                adapterResult.errorMessage ?? (outcome === "timed_out" ? "Timed out" : "Adapter failed"),
+                outcomeWarning ?? adapterResult.errorMessage ?? (outcome === "timed_out" ? "Timed out" : "Adapter failed"),
                 currentUserRedactionOptions,
               ),
         errorCode:
@@ -2656,7 +2694,7 @@ export function heartbeatService(db: Db) {
             : outcome === "cancelled"
               ? "cancelled"
               : outcome === "failed"
-                ? (adapterResult.errorCode ?? "adapter_failed")
+                ? (outcomeWarning ? "acknowledgement_only" : (adapterResult.errorCode ?? "adapter_failed"))
                 : null,
         exitCode: adapterResult.exitCode,
         signal: adapterResult.signal,
