@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildIssueContextSection } from "@paperclipai/adapter-utils/server-utils";
+import { buildIssueContextSection } from "./server-utils.js";
 
 describe("buildIssueContextSection", () => {
   it("returns empty string when no issue title in context", () => {
@@ -59,12 +59,10 @@ describe("buildIssueContextSection", () => {
         "Criar um agente CTO que gerencie a equipe de engenharia e delegue a integração entre os serviços CFN, Navi e Paperclip.",
       wakeReason: "issue_assigned",
     });
-    // Must include the operational context
     expect(section).toContain("PAP-100");
     expect(section).toContain("Contratar agente CTO");
     expect(section).toContain("CFN, Navi e Paperclip");
     expect(section).toContain("issue_assigned");
-    // Must NOT be the generic fallback
     expect(section).not.toContain("Continue your Paperclip work");
   });
 });

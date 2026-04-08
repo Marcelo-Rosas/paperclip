@@ -60,6 +60,48 @@ describe("isAcknowledgementOnlyOutput", () => {
       ),
     ).toBe(false);
   });
+
+  it("returns false when summary is acknowledgement but stdout contains tool_use evidence", () => {
+    expect(
+      isAcknowledgementOnlyOutput(
+        "Entendido. Instruções carregadas.",
+        '{"type":"tool_use","part":{"tool":"Bash"}}',
+      ),
+    ).toBe(false);
+  });
+
+  it("returns false when stdout shows file creation alongside acknowledgement text", () => {
+    expect(
+      isAcknowledgementOnlyOutput(
+        "Understood. Ready to receive new tasks.",
+        "created file src/agents/cto.ts\ncommitted branch feature/cto",
+      ),
+    ).toBe(false);
+  });
+
+  it("returns false when stdout shows API mutation alongside acknowledgement text", () => {
+    expect(
+      isAcknowledgementOnlyOutput(
+        "Entendido. Aguardo novas tarefas.",
+        "POST /api/issues/abc-123/checkout\nPATCH /api/issues/abc-123 status in_progress",
+      ),
+    ).toBe(false);
+  });
+
+  it("still detects acknowledgement when stdout is also empty/passive", () => {
+    expect(
+      isAcknowledgementOnlyOutput(
+        "Entendido. Instruções carregadas e pronto para receber novas tarefas.",
+        "",
+      ),
+    ).toBe(true);
+    expect(
+      isAcknowledgementOnlyOutput(
+        "Understood. Standing by.",
+        null,
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("summarizeHeartbeatRunResultJson", () => {

@@ -288,25 +288,29 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       heartbeatPromptChars: renderedPrompt.length,
     };
 
-    // --- Diagnostic: log the final prompt, session, and issue context delivered
+    // --- Diagnostic: log session, issue context, and prompt shape delivered
     // to the opencode process.  Removable once flow is confirmed stable.
+    // Prompt content is only logged when PAPERCLIP_DEBUG_ADAPTER_PROMPT=1
+    // to avoid leaking sensitive issue data, instructions, or private URLs.
+    const debugPromptEnabled = env.PAPERCLIP_DEBUG_ADAPTER_PROMPT === "1";
     await onLog(
       "stderr",
       [
         `[paperclip:opencode_local] === Adapter Dispatch Diagnostic ===`,
         `  runId: ${runId}`,
         `  agentId: ${agent.id} (${agent.name})`,
-        `  issueTitle: ${asString(context.issueTitle, "(none)")}`,
         `  issueIdentifier: ${asString(context.issueIdentifier, "(none)")}`,
-        `  hasIssueDescription: ${Boolean(asString(context.issueDescription, ""))}`,
+        `  containsIssueTitle: ${Boolean(asString(context.issueTitle, ""))}`,
+        `  containsIssueDescription: ${Boolean(asString(context.issueDescription, ""))}`,
         `  wakeReason: ${asString(context.wakeReason, "(none)")}`,
         `  sessionId (resume): ${sessionId ?? "(fresh session)"}`,
         `  canResumeSession: ${canResumeSession}`,
         `  runtimeSessionId: ${runtimeSessionId || "(none)"}`,
-        `  runtimeSessionCwd: ${runtimeSessionCwd || "(none)"}`,
         `  cwd: ${cwd}`,
         `  promptMetrics: ${JSON.stringify(promptMetrics)}`,
-        `  promptPreview (first 500 chars): ${prompt.slice(0, 500).replace(/\n/g, "\\n")}`,
+        ...(debugPromptEnabled
+          ? [`  promptPreview (first 500 chars): ${prompt.slice(0, 500).replace(/\n/g, "\\n")}`]
+          : []),
         `[paperclip:opencode_local] === End Diagnostic ===`,
       ].join("\n") + "\n",
     );

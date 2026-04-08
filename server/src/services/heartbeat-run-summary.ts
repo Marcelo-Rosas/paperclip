@@ -19,15 +19,47 @@ const ACKNOWLEDGEMENT_PATTERNS = [
 ];
 
 /**
+ * Patterns in stdout that indicate the agent performed concrete actions
+ * (tool calls, file edits, git operations, API requests, etc.).
+ * When present alongside an acknowledgement phrase, the run is NOT
+ * classified as acknowledgement-only.
+ */
+const ACTION_EVIDENCE_PATTERNS = [
+  /\btool_use\b/,
+  /\btool_call\b/,
+  /\btool_result\b/,
+  /\b(?:created|modified|deleted|updated|wrote|committed|pushed|merged)\s+(?:file|branch|commit|PR|pull request)/i,
+  /\bgit\s+(?:commit|push|checkout|merge|rebase)\b/i,
+  /\b(?:POST|PUT|PATCH|DELETE)\s+\/api\//,
+  /\bstatus.*(?:in_progress|done|blocked)/,
+];
+
+/**
  * Returns true when the provided text looks like a readiness/acknowledgement
  * message rather than evidence of operational work.
+ *
+ * The check is two-layered:
+ * 1. The text must match an acknowledgement pattern.
+ * 2. There must be NO evidence of concrete action in either the text itself
+ *    or in an optional `stdoutRaw` blob (full run stdout).
+ *
+ * This prevents false positives when an agent includes "entendido" or
+ * "understood" in a longer response that also contains real work.
  */
-export function isAcknowledgementOnlyOutput(text: string | null | undefined): boolean {
+export function isAcknowledgementOnlyOutput(
+  text: string | null | undefined,
+  stdoutRaw?: string | null,
+): boolean {
   if (!text || typeof text !== "string") return false;
   const trimmed = text.trim();
-  // Very short responses with acknowledgement patterns are suspect
+  // Long responses are unlikely to be pure acknowledgement
   if (trimmed.length > 2000) return false;
-  return ACKNOWLEDGEMENT_PATTERNS.some((pattern) => pattern.test(trimmed));
+  // Must match at least one acknowledgement pattern
+  if (!ACKNOWLEDGEMENT_PATTERNS.some((pattern) => pattern.test(trimmed))) return false;
+  // Check for action evidence in both summary and raw stdout
+  const haystack = stdoutRaw ? `${trimmed}\n${stdoutRaw}` : trimmed;
+  if (ACTION_EVIDENCE_PATTERNS.some((pattern) => pattern.test(haystack))) return false;
+  return true;
 }
 
 function readNumericField(record: Record<string, unknown>, key: string) {

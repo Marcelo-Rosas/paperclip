@@ -2647,7 +2647,7 @@ export function heartbeatService(db: Db) {
         // Detect acknowledgement-only runs: agent exited cleanly but only
         // confirmed readiness instead of performing actual work.
         const summaryText = adapterResult.summary ?? stdoutExcerpt;
-        if (issueId && isAcknowledgementOnlyOutput(summaryText)) {
+        if (issueId && isAcknowledgementOnlyOutput(summaryText, stdoutExcerpt)) {
           outcome = "failed";
           outcomeWarning = "Agent acknowledged instructions but did not perform operational work on the assigned issue.";
           logger.warn(
