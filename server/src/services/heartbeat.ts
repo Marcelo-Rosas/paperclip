@@ -2532,6 +2532,33 @@ export function heartbeatService(db: Db) {
           "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
         );
       }
+      // --- Diagnostic: log contextSnapshot, session decision, and issue context
+      // before dispatching to the adapter.  Removable once the flow is confirmed
+      // stable in production.
+      logger.info(
+        {
+          runId: run.id,
+          agentId: agent.id,
+          adapterType: agent.adapterType,
+          issueId: issueId ?? null,
+          issueTitle: readNonEmptyString(context.issueTitle) ?? null,
+          issueIdentifier: readNonEmptyString(context.issueIdentifier) ?? null,
+          hasIssueDescription: Boolean(readNonEmptyString(context.issueDescription)),
+          wakeReason: readNonEmptyString(context.wakeReason) ?? null,
+          sessionId: runtimeForAdapter.sessionId ?? null,
+          sessionDisplayId: runtimeForAdapter.sessionDisplayId ?? null,
+          sessionResumed: runtimeForAdapter.sessionId != null || runtimeForAdapter.sessionDisplayId != null,
+          sessionRotated: sessionCompaction.rotate,
+          sessionRotationReason: sessionCompaction.reason ?? null,
+          taskKey: runtimeForAdapter.taskKey ?? null,
+          taskSessionReused: taskSessionForRun != null,
+          resetTaskSession,
+          sessionResetReason: sessionResetReason ?? null,
+        },
+        "[paperclip:heartbeat] adapter dispatch — contextSnapshot + session state",
+      );
+      // --- End diagnostic
+
       const adapterResult = await adapter.execute({
         runId: run.id,
         agent,
